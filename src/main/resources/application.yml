@@ -1,0 +1,18 @@
+server:
+  port: 3001
+
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/chatop_test_141023
+    username: ${mysql_username}
+    password: ${mysql_user_password}
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: validate
+        dialect: org.hibernate.dialect.MySQL8Dialect
+      show-sql: true
+      generate-ddl: true
+  application:
+    name: ChâTop
