@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -35,10 +35,10 @@ public class User {
 
     @Column(name = "created_at")
     @DateTimeFormat(pattern = "yyyy/MM/dd")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     @DateTimeFormat(pattern = "yyyy/MM/dd")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
 }

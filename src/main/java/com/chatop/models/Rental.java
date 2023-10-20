@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -40,10 +40,10 @@ public class Rental {
 
     @Column(name = "created_at")
     @DateTimeFormat(pattern = "yyyy/MM/dd")
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     @DateTimeFormat(pattern = "yyyy/MM/dd")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
 }

@@ -1,16 +1,17 @@
 package com.chatop.controllers;
 
+import com.chatop.authservices.user_auth_service.UserAuthService;
 import com.chatop.dtos.AuthResponse;
+import com.chatop.dtos.Token;
+import com.chatop.dtos.UserDTO;
+import com.chatop.exceptions.UserAlreadyExistsException;
 import com.chatop.models.User;
 import com.chatop.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -18,21 +19,32 @@ import java.util.Optional;
 @AllArgsConstructor
 @Slf4j
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
     private final UserRepository userRepository;
+    private final UserAuthService userAuthService;
 
-    @GetMapping("/auth/me")
-    public ResponseEntity<?> retrieveUser(String token) {
-        Optional<User> user = userRepository.findById(1);
-        if(user.isEmpty()) {
-            return new ResponseEntity<>("{}", HttpStatusCode.valueOf(400));
+    @PostMapping("/auth/register")
+    public ResponseEntity<?> register(@RequestBody UserDTO userDTO) throws UserAlreadyExistsException {
+
+        if(userDTO.name() == null || userDTO.email() == null || userDTO.password() == null) {
+            return new ResponseEntity<>("{}", HttpStatus.BAD_REQUEST);
         }
 
-        AuthResponse authResponse =
-                new AuthResponse(user.get().getId(), user.get().getName(), user.get().getEmail(), user.get().getCreatedAt(), user.get().getUpdatedAt());
+        Token token = userAuthService.register(userDTO);
 
-        return ResponseEntity.ok(authResponse);
+        return ResponseEntity.ok(token);
+    }
+
+    @GetMapping("/auth/me")
+    public ResponseEntity<?> retrieveUser() {
+       AuthResponse authResponse = userAuthService.retrieveProfile();
+
+       if (authResponse == null) {
+           return new ResponseEntity<>("{}", HttpStatus.UNAUTHORIZED);
+       }
+       return ResponseEntity.ok(authResponse);
     }
 
     @GetMapping("/user/{id}")

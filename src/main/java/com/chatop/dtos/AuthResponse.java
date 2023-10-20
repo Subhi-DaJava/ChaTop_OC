@@ -1,5 +1,5 @@
 package com.chatop.dtos;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public record AuthResponse(Integer id, String name, String email, LocalDate created_at, LocalDate updated_at) { }
+public record AuthResponse(Integer id, String name, String email, LocalDateTime created_at, LocalDateTime updated_at) { }

@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/api")
 @Slf4j
+@CrossOrigin(origins = "http://localhost:4200")
 public class RentalController {
 
     private final RentalRepository rentalRepository;
