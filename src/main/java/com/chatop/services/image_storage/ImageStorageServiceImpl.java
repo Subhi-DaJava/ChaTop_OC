@@ -25,12 +25,12 @@ public class ImageStorageServiceImpl implements ImageStorageService {
         String contentType = image.getContentType();
 
         if (contentType == null ) {
-            log.error("Le type de contenu de l'image est inconnu.");
-            throw new InvalidImageFormatException("Le type de contenu de l'image est inconnu.");
+            log.error("The content type of the image is unknown.");
+            throw new InvalidImageFormatException("The content type of the image is unknown.");
         }
         if (!(contentType.equals("image/jpeg") || contentType.equals("image/png") || contentType.equals("image/jpg"))) {
-            log.error("Seules les images au format JPG, PNG ou JPEG sont acceptées.");
-            throw new InvalidImageFormatException("Seules les images au format JPG, PNG ou JPEG sont acceptées.");
+            log.error("Only images in JPG, PNG or JPEG format are accepted.");
+            throw new InvalidImageFormatException("Only images in JPG, PNG or JPEG format are accepted.");
         }
         try {
             Path path = Paths.get(imageStoragePath, image.getOriginalFilename());

@@ -21,7 +21,6 @@ import java.util.Optional;
 @AllArgsConstructor
 @Slf4j
 @RequestMapping("/api")
-//@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
     private final UserRepository userRepository;

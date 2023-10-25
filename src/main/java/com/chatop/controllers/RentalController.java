@@ -16,7 +16,6 @@ import java.io.IOException;
 
 @RequestMapping("/api")
 @Slf4j
-//@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class RentalController {
 

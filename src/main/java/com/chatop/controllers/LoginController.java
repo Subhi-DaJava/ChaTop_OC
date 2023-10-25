@@ -21,7 +21,6 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api")
 @Slf4j
-//@CrossOrigin(origins = "http://localhost:4200")
 public class LoginController {
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
