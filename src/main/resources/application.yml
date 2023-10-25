@@ -16,3 +16,7 @@ spring:
       generate-ddl: true
   application:
     name: ChâTop
+
+image-storage-path : ${IMAGE_STORAGE_PATH}
+image-url: ${IMAGE_URL}
+jwt-secret-key: ${JWT_SECRET_KEY}

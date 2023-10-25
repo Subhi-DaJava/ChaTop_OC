@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -19,7 +21,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Slf4j
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
     private final UserRepository userRepository;
@@ -39,12 +41,19 @@ public class UserController {
 
     @GetMapping("/auth/me")
     public ResponseEntity<?> retrieveUser() {
-       AuthResponse authResponse = userAuthService.retrieveProfile();
 
-       if (authResponse == null) {
-           return new ResponseEntity<>("{}", HttpStatus.UNAUTHORIZED);
-       }
-       return ResponseEntity.ok(authResponse);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return new ResponseEntity<>("{}", HttpStatus.UNAUTHORIZED);
+        }
+
+        AuthResponse authResponse = userAuthService.retrieveProfile();
+
+        if (authResponse == null) {
+            return new ResponseEntity<>("{}", HttpStatus.UNAUTHORIZED);
+        }
+        log.info("User retrieved successfully");
+        return ResponseEntity.ok(authResponse);
     }
 
     @GetMapping("/user/{id}")

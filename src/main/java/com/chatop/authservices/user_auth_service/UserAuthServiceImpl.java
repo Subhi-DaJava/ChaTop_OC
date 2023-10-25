@@ -2,6 +2,7 @@ package com.chatop.authservices.user_auth_service;
 
 import com.chatop.authservices.custom_user_details_service.CustomUserDetailsService;
 import com.chatop.dtos.*;
+import com.chatop.exceptions.UnauthorizedUserException;
 import com.chatop.exceptions.UserAlreadyExistsException;
 import com.chatop.models.User;
 import com.chatop.repositories.UserRepository;
@@ -11,11 +12,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -40,8 +41,8 @@ public class UserAuthServiceImpl implements UserAuthService {
         Optional<User> userFindByEmail = userRepository.findByEmail(userDTO.email());
 
         if (userFindByEmail.isPresent()) {
-            log.error("User with email {} already exists", userDTO.email());
-            throw new UserAlreadyExistsException("User with email: {%s} already exists".formatted(userDTO.email()));
+            log.error("User with email {} already exists in DB !!", userDTO.email());
+            throw new UserAlreadyExistsException("User with email: {%s} already exists in DB!!".formatted(userDTO.email()));
         }
 
         if(userDTO.name() == null || userDTO.email() == null || userDTO.password() == null) {
@@ -94,13 +95,10 @@ public class UserAuthServiceImpl implements UserAuthService {
 
         if (authentication != null) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+            User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
             return new AuthResponse(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
         }
-        try {
-            throw new UserPrincipalNotFoundException("User not found");
-        } catch (UserPrincipalNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        throw new UnauthorizedUserException("User is not authenticated");
+
     }
 }

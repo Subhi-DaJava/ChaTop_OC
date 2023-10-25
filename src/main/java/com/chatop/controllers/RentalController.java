@@ -1,85 +1,103 @@
 package com.chatop.controllers;
 
-import com.chatop.dtos.MessageResponse;
-import com.chatop.dtos.RentalDTO;
-import com.chatop.dtos.RentalsResponse;
-import com.chatop.models.Rental;
-import com.chatop.repositories.RentalRepository;
-import lombok.AllArgsConstructor;
+import com.chatop.dtos.*;
+import com.chatop.exceptions.UnauthorizedUserException;
+import com.chatop.services.image_storage.ImageStorageService;
+import com.chatop.services.rental.RentalService;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.io.IOException;
 
-@RestController
-@AllArgsConstructor
+
 @RequestMapping("/api")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
+@RestController
 public class RentalController {
 
-    private final RentalRepository rentalRepository;
+    private final RentalService rentalService;
+    private final ImageStorageService imageStorageService;
+
+    public RentalController(RentalService rentalService, ImageStorageService imageStorageService) {
+        this.rentalService = rentalService;
+        this.imageStorageService = imageStorageService;
+    }
+
+    @Value("${image-url}")
+    private String imageUrl;
+
 
     @GetMapping("/rentals")
     public ResponseEntity<RentalsResponse> retrieveAllRentals() {
 
-        List<Rental> rentals = rentalRepository.findAll();
-
-        if(rentals.isEmpty()) {
+        RentalsResponse rentals = rentalService.retrieveAllRentals();
+        if (rentals == null) {
             return ResponseEntity.notFound().build();
         }
-        List<RentalDTO> rentalDTOS = rentals.stream().map(rental ->
-                new RentalDTO(
-                        rental.getId(),
-                        rental.getName(),
-                        rental.getSurface(),
-                        rental.getPrice(),
-                        rental.getPicture(),
-                        rental.getDescription(),
-                        rental.getOwner().getId(),
-                        rental.getCreatedAt(),
-                        rental.getUpdatedAt())).toList();
-
-        RentalsResponse rentalsResponse = new RentalsResponse("Rentals", rentalDTOS);
-        return ResponseEntity.ok(rentalsResponse);
+        log.info("Rentals retrieved successfully");
+        return ResponseEntity.ok(rentals);
     }
 
     @GetMapping("/rentals/{id}")
     public ResponseEntity<?> retrieveRentalById(@PathVariable Integer id) {
-        Rental rental = rentalRepository.findById(id).orElse(null);
+
+        RentalDTO rental = rentalService.retrieveRentalById(id);
+
         if(rental == null) {
             return ResponseEntity.notFound().build();
         }
-        RentalDTO rentalDTO = new RentalDTO(
-                rental.getId(),
-                rental.getName(),
-                rental.getSurface(),
-                rental.getPrice(),
-                rental.getPicture(),
-                rental.getDescription(),
-                rental.getOwner().getId(),
-                rental.getCreatedAt(),
-                rental.getUpdatedAt());
-        return ResponseEntity.ok(rentalDTO);
+        log.info("Rental retrieved successfully with id:{}", id);
+        return ResponseEntity.ok(rental);
     }
 
     @PutMapping("/rentals/{id}")
-    public ResponseEntity<MessageResponse> updateRentalById(@PathVariable Integer id) {
-        Rental rental = rentalRepository.findById(id).orElse(null);
+    public ResponseEntity<MessageResponse> updateRentalById(
+            @PathVariable Integer id,
+            @ModelAttribute("rental") RentalRequest rentalRequest) throws UnauthorizedUserException {
 
-        if(rental == null) {
-            return ResponseEntity.notFound().build();
+        MessageResponse messageResponse = rentalService.updateRental(id, rentalRequest);
+
+        if(messageResponse == null) {
+            return new ResponseEntity<>(HttpStatusCode.valueOf(401));
         }
-        rentalRepository.save(rental);
-        return new ResponseEntity<>(new MessageResponse("Rental updated !"), HttpStatusCode.valueOf(200));
+        log.info("Rental updated successfully with id:{}", id);
+        return new ResponseEntity<>(messageResponse, HttpStatusCode.valueOf(200));
     }
 
     @PostMapping("/rentals")
-    public ResponseEntity<MessageResponse> createRental(@RequestBody Rental rental) {
-        rentalRepository.save(rental);
-        return new ResponseEntity<>(new MessageResponse("Rental created !"), HttpStatusCode.valueOf(200));
+    public ResponseEntity<MessageResponse> createRental(
+            @ModelAttribute("rental") RentalRequest rentalRequest) throws UnauthorizedUserException, IOException {
+
+        String pictureLocation = imageUrl + imageStorageService.savePicture(rentalRequest.getPicture());
+
+        RentalRequestDTO rentalRequestDTO = RentalRequestDTO.builder()
+                .name(rentalRequest.getName())
+                .surface(rentalRequest.getSurface())
+                .price(rentalRequest.getPrice())
+                .picture(pictureLocation)
+                .description(rentalRequest.getDescription())
+                .build();
+        rentalRequestDTO.setPicture(pictureLocation);
+
+        MessageResponse messageResponse = rentalService.createRental(rentalRequestDTO);
+
+        if(messageResponse == null) {
+            return new ResponseEntity<>(HttpStatusCode.valueOf(401));
+        }
+
+        if (messageResponse.equals(new MessageResponse("Field are missing"))) {
+            return new ResponseEntity<>(messageResponse, HttpStatusCode.valueOf(400));
+        }
+
+
+        log.info("Rental created successfully");
+        return new ResponseEntity<>(messageResponse, HttpStatusCode.valueOf(200));
     }
+
 
 }

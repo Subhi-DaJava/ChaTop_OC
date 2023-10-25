@@ -1,6 +1,7 @@
 package com.chatop.filters;
 
 import com.chatop.authservices.custom_user_details_service.CustomUserDetailsService;
+import com.chatop.exceptions.UnauthorizedUserException;
 import com.chatop.securityconfigs.jwtutil.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -50,6 +51,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            } else {
+                log.info("Token is not valid");
+                throw new UnauthorizedUserException("Token is not valid");
             }
 
         }
