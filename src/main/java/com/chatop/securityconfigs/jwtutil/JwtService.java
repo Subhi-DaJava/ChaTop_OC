@@ -15,13 +15,13 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
-public class JwtUtil {
+public class JwtService {
 
     @Value("${jwt-secret-key}")
     private String secretKey;
 
 
-    private final static Integer EXPIRED = 1000 * 60 * 60;
+    private final static Integer EXPIRED_TIME_MS = 1000 * 60 * 60;
 
     public String extractUserEmail(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -49,7 +49,7 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean isTokenValid(String token, UserDetails userDetails) {
         final String userEmail = extractUserEmail(token);
         return userEmail.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
@@ -66,7 +66,7 @@ public class JwtUtil {
                 .setIssuer("ChâTop2023")
                 .setSubject(userEmail)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRED))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRED_TIME_MS))
                 .signWith(getSignKey(), io.jsonwebtoken.SignatureAlgorithm.HS256)
                 .compact();
     }

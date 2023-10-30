@@ -4,14 +4,14 @@ server:
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/chatop_test_141023
+    url: jdbc:mysql://localhost:3306/${mysql_database_name}
     username: ${mysql_username}
     password: ${mysql_user_password}
   jpa:
     properties:
       hibernate:
         ddl-auto: validate
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
       show-sql: true
       generate-ddl: true
   application:

@@ -3,8 +3,8 @@ package com.chatop.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class UserAlreadyExistsException extends Throwable {
+@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "User already exists in DB!!")
+public class UserAlreadyExistsException extends RuntimeException{
     public UserAlreadyExistsException(String message) {
         super(message);
     }

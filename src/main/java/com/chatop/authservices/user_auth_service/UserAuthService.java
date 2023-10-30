@@ -5,9 +5,9 @@ import com.chatop.exceptions.UserAlreadyExistsException;
 
 public interface UserAuthService {
 
-    Token register(UserDTO userDTO) throws UserAlreadyExistsException;
+    Token register(SignUpRequest signUpRequest) throws UserAlreadyExistsException;
 
-     AuthResponseDTO<?> login(AuthRequest authRequest);
+     Token login(AuthRequest authRequest);
 
-    AuthResponse retrieveProfile();
+    MeResponse retrieveProfile();
 }
