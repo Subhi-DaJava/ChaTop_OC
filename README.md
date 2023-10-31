@@ -35,10 +35,10 @@ Before running the ChâTop Backend API, please follow these installation steps :
        - `mvn clean install -Dmysql_database_name=${mysql_database_name} -Dmysql_username=${mysql_username} -Dmysql_user_password=${mysql_user_password} -DIMAGE_STORAGE_PATH=${IMAGE_STORAGE_PATH} -DIMAGE_URL=${IMAGE_URL} -DJWT_SECRET_KEY=${JWT_SECRET_KEY}`
      * Run the `JAR` file:
        - `java -jar target/chatop-0.0.1-SNAPSHOT.jar`(in the root folder of the project) or run `java -jar chatop-0.0.1-SNAPSHOT.jar` in the folder target
-     * Access the API at `[http://localhost:3001](http://localhost:3001)` (test with the `Postman` or with the Frontend app [ChâTop Angular App](https://github.com/OpenClassrooms-Student-Center/Developpez-le-back-end-en-utilisant-Java-et-Spring))
+     * Access the API at [http://localhost:3001](http://localhost:3001) (test with the `Postman` or with the Frontend app [ChâTop Angular App](https://github.com/OpenClassrooms-Student-Center/Developpez-le-back-end-en-utilisant-Java-et-Spring))
   2. Run the application using `Maven` command : <br/>
      * Execute `mvn spring-boot:run`
-     * Access the API at `[http://localhost:3001](http://localhost:3001)` (test with the `Postman` or with the frontend app [ChâTop Angular App](https://github.com/OpenClassrooms-Student-Center/Developpez-le-back-end-en-utilisant-Java-et-Spring))
+     * Access the API at [http://localhost:3001](http://localhost:3001) (test with the `Postman` or with the frontend app [ChâTop Angular App](https://github.com/OpenClassrooms-Student-Center/Developpez-le-back-end-en-utilisant-Java-et-Spring))
   3. Run the application within your IDE
      * Import the project into your IDE
      * Set the environment variables within your IDE's `Run/Debug Configurations`(e.g., IntelliJ)
