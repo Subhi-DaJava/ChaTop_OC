@@ -25,7 +25,7 @@ Before running the ChâTop Backend API, please follow these installation steps :
   * `mysql_user_password`: Your `MySQL password`.
   * `IMAGE_STORAGE_PATH`: The local path where the application should store `Rental` images.
   * `IMAGE_URL`: The URL path for accessing the stored `Rental`' images.
-  * `JWT_SECRET_KEY`: A secret key for generating `JSON Web Token` (JWT) signature (Ensure it is at least 32 characters long for security reason).
+  * `JWT_SECRET_KEY`: A secret key for generating `JSON Web Token` (JWT) signature (Ensure it is at least 32 characters long for security reason or generate one using a dedicated website, e.g., [the site](https://www.devglan.com/online-tools/hmac-sha256-online).
 
 ### Running The Application
 #### There are three ways to run the ChâTop API:
