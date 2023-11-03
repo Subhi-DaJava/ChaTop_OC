@@ -2,7 +2,6 @@ package com.chatop.securityconfigs;
 
 import com.chatop.authservices.custom_user_details_service.CustomUserDetailsService;
 import com.chatop.filters.JwtRequestFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,12 +11,12 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
@@ -26,11 +25,11 @@ public class SecurityConfig {
 
     private final HandlerExceptionResolver exceptionResolver;
 
-    @Autowired
-    private CustomUserDetailsService userService;
+    private final CustomUserDetailsService userService;
 
-    public SecurityConfig(@Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) {
+    public SecurityConfig(@Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver, CustomUserDetailsService userService) {
         this.exceptionResolver = exceptionResolver;
+        this.userService = userService;
     }
 
     @Bean

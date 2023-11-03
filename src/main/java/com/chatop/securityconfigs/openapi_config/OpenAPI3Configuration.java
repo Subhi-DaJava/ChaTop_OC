@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Configuration;
                 @Server(url = "https://chatopt.com", description = "Production backend server")
         }
 )
-public class OpenAPI30Configuration {
+public class OpenAPI3Configuration {
     @Bean
     public OpenAPI customizeOpenAPI() {
 
